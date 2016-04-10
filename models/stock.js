@@ -4,9 +4,10 @@ var Snapshot = require('./snapshot');
 
 var Stock = bookshelf.Model.extend({
    tableName: 'stocks',
+   hasTimestamps: true,
 
    snapshots: function() {
-     return this.hasMany('Snapshot');
+     return this.hasMany(Snapshot);
    }
 });
 module.exports = bookshelf.model('Stock', Stock);

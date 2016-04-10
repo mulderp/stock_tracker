@@ -4,9 +4,10 @@ var Stock = require('./stock');
 
 var Snapshot = bookshelf.Model.extend({
    tableName: 'snapshots',
+   hasTimestamps: true,
 
-   snapshots: function() {
-     return this.belongsTo('Stock');
+   stock: function() {
+     return this.belongsTo(Stock);
    }
 });
 module.exports = bookshelf.model('Snapshot', Snapshot);

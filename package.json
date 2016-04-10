@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bluebird": "^3.3.4",
+    "bookshelf": "^0.9.4",
     "knex": "^0.10.0",
     "sqlite3": "^3.1.3"
   }
