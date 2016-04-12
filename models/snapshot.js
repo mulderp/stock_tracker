@@ -7,7 +7,7 @@ var Snapshot = bookshelf.Model.extend({
    hasTimestamps: true,
 
    stock: function() {
-     return this.belongsTo(Stock);
+     return this.belongsTo('Stock');
    }
 });
 module.exports = bookshelf.model('Snapshot', Snapshot);

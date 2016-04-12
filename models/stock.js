@@ -7,7 +7,7 @@ var Stock = bookshelf.Model.extend({
    hasTimestamps: true,
 
    snapshots: function() {
-     return this.hasMany(Snapshot);
+     return this.hasMany('Snapshot');
    }
 });
 module.exports = bookshelf.model('Stock', Stock);
