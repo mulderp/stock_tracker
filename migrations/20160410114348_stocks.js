@@ -1,5 +1,6 @@
 var table = function(t) {
-   t.increments().primary();
+   t.increments('id')
+    .primary();
    t.string('name');
    t.string('symbol');
    t.timestamps();

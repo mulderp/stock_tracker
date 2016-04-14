@@ -12,7 +12,7 @@ Stock.collection().fetch({
     })
 })
 .then(function(results) {
-  console.log(results);
+  console.log(JSON.stringify(results, null, '  '));
 })
 .finally(function(r) {
   return bookshelf.knex.destroy();

@@ -1,7 +1,10 @@
 function table(t) {
 
-   t.increments().primary();
-   t.integer('stock_id').references('stocks.id');
+   t.increments('id')
+    .primary();
+   t.integer('stock_id')
+    .references('id')
+    .inTable('stocks');
    t.float('price');
    t.string('marketCap');
    t.string('ebitda');
