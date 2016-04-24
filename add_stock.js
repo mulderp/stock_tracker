@@ -2,8 +2,12 @@
 var bookshelf = require('./config');
 var Stock = require('./models/stock');
 
-var stock = Stock.forge({name: 'Intel', symbol: 'INTC'});
-stock.save().
-  then(function() {
+var intc = Stock.forge({name: 'Intel', symbol: 'INTC'});
+  intc.save()
+  // add more stocks...
+  // .then(function() {
+  //   return Stock.forge({name: '...', symbol: '...'}).save()
+  // })
+  .then(function() {
     return bookshelf.knex.destroy();
-});
+  });
