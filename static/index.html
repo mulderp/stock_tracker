@@ -41,7 +41,7 @@
 
     <div class="row">
 	    <div class="span2" id="helper">
-		    <button class="btn btn-success" id="next">next</button>
+	      <button class="btn btn-success" id="next">next</button>
 	    </div>
       <div class="span2" id="sum"></div>
     </div>
@@ -52,9 +52,20 @@
 
     <script type="text/javascript">
       var Stocks = Backbone.Collection.extend({
-        url: '/stocks'
-      })
+         url: '/stocks',
+         next: function() {
+	   var selected = parseInt(this.getAttribute('selected'));
+	   if (selected < this.size()-1) {
+	     this.setAttribute('selected', selected + 1);
+	   } else {
+	     this.setAttribute('selected', 0);
+	   }
+	   return this.toJSON()[selected];
+	 }
+      });
+      _.defaults(Stocks.prototype, Backbone.Attributes);
       var stocks = new Stocks();
+      stocks.setAttribute('selected', 1);
       stocks.fetch();
 
       var Snapshot = Backbone.Collection.extend({
@@ -73,9 +84,9 @@
       snapshots.fetch({success: updateGraph});
 
       $('#next').click(function() {
-	var id = parseInt(snapshots.getAttribute('id'));
-	id = id + 1;
-	snapshots.setAttribute('id', id);
+	var stock = stocks.next();
+	console.log(stock);
+	snapshots.setAttribute('id', stock.id);
 	d3.selectAll(".container").remove();
 
         snapshots.fetch({success: updateGraph});
@@ -100,7 +111,7 @@
 
   var data = snapshots.map(function(d) { return d.get('price') });
   var x = d3.scale.linear().domain([0, data.length]).range([0, w]);
-  var y = d3.scale.linear().domain([0, d3.max(data)]).range([0, h]);
+  var y = d3.scale.linear().domain([0, d3.max(data)+10]).range([h, 0]);
   var line = d3.svg.line().x(function(d, i) { return x(i) }).y(function(d, i) { return y(d) })
 
   var xAxis = d3.svg.axis().scale(x).tickSize(-h).tickSubdivide(true);
