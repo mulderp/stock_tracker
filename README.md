@@ -2,6 +2,12 @@
 
 This project uses the Yahoo Finance API to get some parameters of a stock and stores it in the database.
 
+# Install
+
+You need to install the node modules (db connection, ORM, express, ... ) with:
+
+    $ npm install
+
 # Usage
 
 First, run the latest migrations on the SQLite database:
@@ -10,15 +16,15 @@ First, run the latest migrations on the SQLite database:
 
 Then, add stock symbols by editing the `add_stock.js` script. Then run it:
 
-    $ node add_stock.js
+    $ node scripts/add_stock.js
 
 Add stock to fetch from the Yahoo API:
 
-    $ node add_snapshots.js
+    $ node scripts/add_snapshots.js
 
 To see the stock snapshots, run:
 
-    $ node report_stocks.js
+    $ node scripts/report_stocks.js
 
 # License
 
