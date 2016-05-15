@@ -2,13 +2,14 @@ var yahooFinance = require('yahoo-finance');
 var _ = require('underscore');
 
 // connect with db
-var bookshelf = require('./config');
+var bookshelf = require('../config');
 var Promise = require('bluebird');
-var Stock = require('./models/stock');
-var Snapshot = require('./models/snapshot');
+var Stock = require('../models/stock');
+var Snapshot = require('../models/snapshot');
 
 console.log('fetch data');
-fetchSnapshot(['INTC'])
+var symbols = ['INTC']; 
+fetchSnapshot(symbols);
 
 function fetchSnapshot(symbols) {
   var result = yahooFinance.snapshot({

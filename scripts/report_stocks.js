@@ -1,6 +1,6 @@
-var bookshelf = require('./config');
+var bookshelf = require('../config');
 
-var Stock = require('./models/stock');
+var Stock = require('../models/stock');
 var Promise = require("bluebird");
 
 Stock.collection().fetch({
@@ -8,7 +8,12 @@ Stock.collection().fetch({
 })
 .then(function(collection) {
     return collection.mapThen(function(model) {
-      return model.toJSON();
+      var stock = model.toJSON();
+      var related = model.related('snapshots');
+      return {stock: model.get('name'), symbol: model.get('symbol'),
+        snapshots: related.map(function(m) { return m.pick('price', 'volume') })
+//        ebitda: related.pluck('ebitda')
+      }
     })
 })
 .then(function(results) {

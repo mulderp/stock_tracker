@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+  <head>
+    <meta charset="utf-8">
+    <!--
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+    -->
+    <link rel="stylesheet" type="text/css" href="style.css"/>
+    <script src="/libs/jquery-2.0.0.min.js"></script>
+    <script src="/libs/underscore-min.js"></script>
+    <script src="/libs/backbone-min.js"></script>
+    <script src="/libs/backbone.attributes.js"></script>
+    <script src="/libs/d3.v3.min.js"></script>
+    <script src="src.js"></script>
+    <style>
+	.line {
+		stroke: red;
+		stroke-width: 2px;
+		fill: none;
+	}
+
+        .x.axis line {
+	  stroke: lightgrey;
+	}
+
+	.x.axis .minor {
+	  stroke-opacity: .5;
+	}
+
+	.x.axis path {
+	  display: none;
+	}
+
+	.y.axis line, .y.axis path {
+	  fill: none;
+	  stroke: #000;
+	}
+    </style>
+  </head>
+  <body>
+    <h2>Trends</h2>
+
+    <div class="row">
+	    <div class="span2" id="helper">
+		    <button class="btn btn-success" id="next">next</button>
+	    </div>
+      <div class="span2" id="sum"></div>
+    </div>
+
+    <div class="row">
+      <div id="chart"></div>
+    </div>
+
+    <script type="text/javascript">
+      var Stocks = Backbone.Collection.extend({
+        url: '/stocks'
+      })
+      var stocks = new Stocks();
+      stocks.fetch();
+
+      var Snapshot = Backbone.Collection.extend({
+        url: function() {
+          return '/stocks/' + this.getAttribute('id');
+        },
+        parse: function(res) {
+          this.setAttribute('stock', res.stock); 
+          this.setAttribute('symbol', res.symbol); 
+          return res.snapshots;
+        }
+      })
+      _.defaults(Snapshot.prototype, Backbone.Attributes);
+      var snapshots = new Snapshot();
+      snapshots.setAttribute('id', 1);
+      snapshots.fetch({success: updateGraph});
+
+      $('#next').click(function() {
+	var id = parseInt(snapshots.getAttribute('id'));
+	id = id + 1;
+	snapshots.setAttribute('id', id);
+	d3.selectAll(".container").remove();
+
+        snapshots.fetch({success: updateGraph});
+      });
+
+      function updateGraph() {
+		// define dimensions of graph
+		var m = [80, 80, 80, 80]; // margins
+		var w = 1000 - m[1] - m[3]; // width
+		var h = 400 - m[0] - m[2]; // height
+
+      var container = d3.select('#chart')
+                         .append('div')
+                         .attr('class', 'container');
+      container.append('h1')
+         .text(snapshots.getAttribute('symbol'));
+
+      var svg =  container 
+                    .append('svg')
+                    .attr('width', w)
+                    .attr('height', h);
+
+  var data = snapshots.map(function(d) { return d.get('price') });
+  var x = d3.scale.linear().domain([0, data.length]).range([0, w]);
+  var y = d3.scale.linear().domain([0, d3.max(data)]).range([0, h]);
+  var line = d3.svg.line().x(function(d, i) { return x(i) }).y(function(d, i) { return y(d) })
+
+  var xAxis = d3.svg.axis().scale(x).tickSize(-h).tickSubdivide(true);
+  svg.append('g')
+     .attr("class", "x axis")
+     .attr("transform", "translate(0, " + h + ")")
+     .call(xAxis);
+
+  var yAxis = d3.svg.axis().scale(y).ticks(4).orient("left")
+  svg.append('g')
+     .attr("class", "y axis")
+     .attr("transform", "translate(5, 0)")
+     .call(yAxis);
+
+    // main data
+    svg.append("path").attr('class', 'line').attr('d', line(data));
+  }
+ 
+    </script>
+  </body>
+</html>
